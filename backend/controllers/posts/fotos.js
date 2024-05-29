@@ -22,11 +22,6 @@ const getFotosByPropiedad = async (req, res) => {
 
 const subirFoto = async (req, res) => {
   try {
-    if (req.userTipo !== 'user') {
-      return res.status(401).json({
-        error: 'No tienes permisos para realizar esta acción'
-      });
-    }
 
     const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     res.json({ url: fileUrl });

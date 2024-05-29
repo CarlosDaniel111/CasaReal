@@ -69,8 +69,29 @@ const getUserById = async (req, res) => {
   }
 }
 
+const getVendedores = async (req, res) => {
+  try {
+    conexion.query('SELECT idUsuario,nombre,telefono,correo FROM Usuario WHERE tipo = "Vendedor"', async (error, results) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({
+          error: 'Server error'
+        });
+      }
+      res.json(results);
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      error: 'Server error'
+    });
+  }
+
+}
+
 module.exports = {
   getUser,
   getUserById,
   getAllUsers,
+  getVendedores
 }

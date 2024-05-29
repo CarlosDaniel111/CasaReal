@@ -1,10 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { constants } from '../constants/constants';
+import { URL_API } from '../utils/constants';
 
 export const RegisterPage = () => {
+
+  useEffect(() => {
+    if (localStorage.getItem('authentication-token')) {
+      navigate('/perfil');
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -49,7 +55,7 @@ export const RegisterPage = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      axios.post(constants.URL_API + '/users/register', {
+      axios.post(URL_API + '/users/register', {
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
@@ -59,8 +65,17 @@ export const RegisterPage = () => {
           setErrors({});
           // Guardar token en localStorage
           localStorage.setItem('authentication-token', response.data.token);
-          // Redirigir a la página de perfil
-          navigate('/perfil');
+          axios.get(URL_API + '/users', {
+            headers: {
+              'authentication-token': response.data.token
+            }
+          }).then((response) => {
+            setUser(response.data);
+            // Redirigir a la página de perfil
+            navigate('/perfil');
+          }).catch((error) => {
+            console.error(error);
+          });
         } else {
           alert('Error al crear el usuario');
         }

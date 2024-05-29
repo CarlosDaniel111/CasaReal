@@ -73,7 +73,7 @@ const getMyPostsAsignados = async (req, res) => {
       "INNER JOIN Propiedad PR ON P.propiedad = PR.idPropiedad " +
       "INNER JOIN Ubicacion U ON PR.ubicacion = U.idUbicacion " +
       "INNER JOIN Foto F ON PR.idPropiedad = F.propiedad AND F.lugar = 'Principal' " +
-      "WHERE idVendedor = ?", [idUser], async (error, results) => {
+      "WHERE P.vendedor = ?", [idUser], async (error, results) => {
         if (error) {
           console.log(error);
           return res.status(500).json({

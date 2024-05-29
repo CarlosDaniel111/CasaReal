@@ -43,6 +43,8 @@ export const EspecificacionesCard = ({ formData, setFormData, setPagina }) => {
 
   const handleFileChange2 = (e) => {
     const { id } = e.target;
+    if (e.target.files.length !== 2) return;
+
     setFormData({
       ...formData,
       [id]: [e.target.files[0], e.target.files[1]]
@@ -84,11 +86,12 @@ export const EspecificacionesCard = ({ formData, setFormData, setPagina }) => {
       });
     }
 
-    if (formData.fotosCocina.length !== 2) newErrors.fotosCocina = 'Debes agregar dos fotos de la cocina';
+    console.log(formData.fotosCocina.length)
+    if (formData.fotosCocina.length != 2) newErrors.fotosCocina = 'Debes agregar dos fotos de la cocina';
     if (formData.fotosSala.length !== 2) newErrors.fotosSala = 'Debes agregar dos fotos de la sala';
     if (formData.fotosComedor.length !== 2) newErrors.fotosComedor = 'Debes agregar dos fotos del comedor';
-    if (formData.fotosPatio.length !== 0 && formData.fotosPatio.length !== 2) newErrors.fotosPatio = 'Debes agregar dos fotos del patio';
-    if (formData.fotosCochera.length !== 0 && formData.fotosCochera.length !== 2) newErrors.fotosCochera = 'Debes agregar dos fotos de la cochera';
+    if (formData.fotosPatio.length != 0 && formData.fotosPatio.length !== 2) newErrors.fotosPatio = 'Debes agregar dos fotos del patio';
+    if (formData.fotosCochera != 0 && formData.fotosCochera.length !== 2) newErrors.fotosCochera = 'Debes agregar dos fotos de la cochera';
 
 
     return newErrors;
@@ -129,10 +132,6 @@ export const EspecificacionesCard = ({ formData, setFormData, setPagina }) => {
 
 
     setPagina(3);
-  }
-
-  const handleRegresar = () => {
-    setPagina(1);
   }
 
   return (
@@ -202,6 +201,11 @@ export const EspecificacionesCard = ({ formData, setFormData, setPagina }) => {
           className={`w-full px-3 py-2 border ${errors.anosAntiguedad ? 'border-red-500' : 'mb-2'}`}
         />
         {errors.anosAntiguedad && <p className="text-red-500 text-sm">{errors.anosAntiguedad}</p>}
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-3xl font-semibold">Fotos</h3>
+        <span className="text-gray-500">Ingresa 2 fotos por cada habitacion</span>
       </div>
 
       {/* Numero de recamaras */}
@@ -346,7 +350,7 @@ export const EspecificacionesCard = ({ formData, setFormData, setPagina }) => {
 
       {/* Patio */}
       <div className="mb-6">
-        <h3 className={`text-lg font-semibold ${errors.fotosPatio ? "" : "mb-2"} `}>Patio</h3>
+        <h3 className={`text-lg font-semibold ${errors.fotosPatio ? "" : "mb-2"} `}>Patio (opcional)</h3>
         {errors.fotosPatio && <p className="text-red-500 text-sm mb-2">{errors.fotosPatio}</p>}
         <input
           id="fotosPatio"
@@ -356,7 +360,7 @@ export const EspecificacionesCard = ({ formData, setFormData, setPagina }) => {
 
       {/* Cochera */}
       <div className="mb-6">
-        <h3 className={`text-lg font-semibold ${errors.fotosCochera ? "" : "mb-2"} `}>Cochera</h3>
+        <h3 className={`text-lg font-semibold ${errors.fotosCochera ? "" : "mb-2"} `}>Cochera (opcional)</h3>
         {errors.fotosCochera && <p className="text-red-500 text-sm mb-2">{errors.fotosCochera}</p>}
         <input
           id="fotosCochera"

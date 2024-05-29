@@ -1,44 +1,70 @@
 
-import { Button, Navbar } from "flowbite-react";
+import { Button, Navbar, Avatar, Dropdown } from "flowbite-react";
 import logo from "../../assets/logo.png";
+import fotoPerfil from "../../assets/perfil.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { URL_API } from "../../utils/constants";
+import { useUser } from "../../utils/UserContext";
 
 export function Barra() {
-
-  const [isLogging, setIsLogging] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem('authentication-token')) {
-      setIsLogging(true);
-    }
-  }, []);
+  const { user, setUser } = useUser();
 
   const handleLogout = () => {
     localStorage.removeItem('authentication-token');
-    setIsLogging(false);
+    setUser(null);
     navigate('/');
   }
 
   return (
     <Navbar fluid rounded>
       <NavLink to="/">
-        <Navbar.Brand>
-          <img src={logo} className="ml-5 h-6 sm:h-9" alt="CasaReal Logo" />
-        </Navbar.Brand>
+        <img src={logo} className="ml-5 h-6 sm:h-9" alt="CasaReal Logo" />
+
       </NavLink>
       <div className="flex md:order-2">
         {
-          isLogging ? (
-            <>
-              <Button as={NavLink} to="/perfil" color="blue">
-                Mi Perfil
-              </Button>
-              <Button onClick={handleLogout} className="ml-2 md:ml-5" color="gray">
-                Cerrar Sesión
-              </Button>
-            </>
+          user ? (
+            <div className="flex md:order-2">
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  <Avatar alt="User settings" img={fotoPerfil} rounded />
+                }
+              >
+                <Dropdown.Header>
+                  <span className="block text-sm">{user.nombre}</span>
+                  <span className="block truncate text-sm font-medium">{user.correo}</span>
+                </Dropdown.Header>
+                <Dropdown.Item as={NavLink} to="/perfil">Mi perfil</Dropdown.Item>
+                <Dropdown.Item as={NavLink} to="/publicar">Publicar propiedad</Dropdown.Item>
+                <Dropdown.Item as={NavLink} to="/citas">Ver mis citas</Dropdown.Item>
+                <Dropdown.Divider />
+                {
+                  user.tipo === 'admin' && (
+                    <>
+                      <Dropdown.Item as={NavLink} to="/admin/autorizar">Autorizar publicaciones</Dropdown.Item>
+                      <Dropdown.Item as={NavLink} to="/admin/asignar">Asignar vendedores</Dropdown.Item>
+                    </>
+                  )
+                }
+
+                {
+                  user.tipo === 'vendedor' && (
+                    <>
+                      <Dropdown.Item as={NavLink} to="/vendedor/propiedades">Mis propiedades asignadas</Dropdown.Item>
+                    </>
+                  )
+                }
+
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={handleLogout}>Cerrar Sesión</Dropdown.Item>
+              </Dropdown>
+            </div>
           ) : (
             <Button as={NavLink} to="/login" color="blue">
               Iniciar Sesión
@@ -48,11 +74,11 @@ export function Barra() {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <NavLink className="md:font-bold md:text-lg" to="/">
+        <Navbar.Link as={NavLink} to="/" className="md:font-bold md:text-lg">
           Inicio
-        </NavLink>
-        <NavLink className="md:font-bold md:text-lg" to="/propiedades">Propiedades</NavLink>
-        <NavLink className="md:font-bold md:text-lg" to="/mapa">Mapa</NavLink>
+        </Navbar.Link>
+        <Navbar.Link as={NavLink} className="md:font-bold md:text-lg" to="/propiedades">Propiedades</Navbar.Link>
+        <Navbar.Link as={NavLink} className="md:font-bold md:text-lg" to="/mapa">Mapa</Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
   );

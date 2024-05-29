@@ -66,8 +66,7 @@ CREATE TABLE Publicacion(
 
 CREATE TABLE Cita(
     idCita INT PRIMARY KEY AUTO_INCREMENT,
-    fechaCita DATE,
-    hora TIME,
+    fechaCita DATETIME,
     estatus VARCHAR(20),
     publicacion INT,
     comprador INT,

@@ -1,6 +1,6 @@
 const express = require('express');
 const { validarJWT } = require('../middlewares/authentication');
-const { generarCita, rechazarCita, aceptarCita, cancelarCita, getCitasVendedor, getCitasComprador } = require('../controllers/citas/cita');
+const { generarCita, rechazarCita, aceptarCita, cancelarCita, getCitasVendedor, getCitasComprador, getCitaById } = require('../controllers/citas/cita');
 const { citaValidator, checkErrors, contratoValidator } = require('../middlewares/expressValidator');
 const { generarContrato, getContratos } = require('../controllers/citas/contrato');
 
@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/vendedor', validarJWT, getCitasVendedor);
 router.get('/comprador', validarJWT, getCitasComprador);
+router.get('/:id', getCitaById);
 
 router.get('/contratos', getContratos);
 

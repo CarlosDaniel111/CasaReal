@@ -17,30 +17,30 @@ const createPost = async (req, res) => {
       }
 
       const { calle, numeroExterior, numeroInterior, estado, ciudad, colonia, codigoPostal, referencia } = req.body;
-      conexion.query('INSERT INTO Ubicacion SET ?', { calle, numeroExterior, numeroInterior, estado, ciudad, colonia, codigoPostal, referencia }, async (error, results) => {
-        if (error) {
-          console.log(error);
+      conexion.query('INSERT INTO Ubicacion SET ?', { calle, numeroExterior, numeroInterior, estado, ciudad, colonia, codigoPostal, referencia }, async (error2, results2) => {
+        if (error2) {
+          console.log(error2);
           return res.status(500).json({
             error: 'Server error'
           });
         }
-        const idUbicacion = results.insertId;
+        const idUbicacion = results2.insertId;
         const { titulo, descripcion, numRecamaras, numBanosCompletos, numMediosBanos, numAutos, numPisos, superficieTotal, tamPatio, anosAntiguedad, precio } = req.body;
-        conexion.query('INSERT INTO Propiedad SET ?', { titulo, descripcion, numRecamaras, numBanosCompletos, numMediosBanos, numAutos, numPisos, superficieTotal, tamPatio, anosAntiguedad, precio, ubicacion: idUbicacion }, async (error, results) => {
-          if (error) {
-            console.log(error);
+        conexion.query('INSERT INTO Propiedad SET ?', { titulo, descripcion, numRecamaras, numBanosCompletos, numMediosBanos, numAutos, numPisos, superficieTotal, tamPatio, anosAntiguedad, precio, ubicacion: idUbicacion }, async (error3, results3) => {
+          if (error3) {
+            console.log(error3);
             return res.status(500).json({
               error: 'Server error'
             });
           }
-          const idPropiedad = results.insertId;
+          const idPropiedad = results3.insertId;
           const { fotos } = req.body;
           console.log(req.body);
           fotos.forEach(async (foto) => {
             const { fotoURL, lugar } = foto;
-            conexion.query('INSERT INTO Foto SET ?', { fotoURL, lugar, propiedad: idPropiedad }, async (error, results) => {
-              if (error) {
-                console.log(error);
+            conexion.query('INSERT INTO Foto SET ?', { fotoURL, lugar, propiedad: idPropiedad }, async (error4, results4) => {
+              if (error4) {
+                console.log(error4);
                 return res.status(500).json({
                   error: 'Server error'
                 });
@@ -56,9 +56,9 @@ const createPost = async (req, res) => {
           if (req.userTipo === 'vendedor') {
             vendedor = id;
           }
-          conexion.query('INSERT INTO Publicacion SET ?', { publicador: id, propiedad: idPropiedad, estatus: 'En Autorizacion', vendedor, fechaPublicacion: new Date(), tipo }, async (error, results) => {
-            if (error) {
-              console.log(error);
+          conexion.query('INSERT INTO Publicacion SET ?', { publicador: id, propiedad: idPropiedad, estatus: 'En Autorizacion', vendedor, fechaPublicacion: new Date(), tipo }, async (error5, results5) => {
+            if (error5) {
+              console.log(error5);
               return res.status(500).json({
                 error: 'Server error'
               });
@@ -93,11 +93,6 @@ const getMyPosts = async (req, res) => {
         });
       }
 
-      if (results.length === 0) {
-        return res.status(404).json({
-          error: 'Publicaciones no encontradas'
-        });
-      }
 
       res.status(200).json({
         posts: results

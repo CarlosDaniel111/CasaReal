@@ -35,7 +35,7 @@ const generarContrato = async (req, res) => {
       cita
     } = req.body;
 
-    conexion.querty('SELECT vendedor FROM Cita WHERE idCita = ?', [cita], async (error, results) => {
+    conexion.query('SELECT vendedor FROM Cita WHERE idCita = ?', [cita], async (error, results) => {
       if (error) {
         console.log(error);
         return res.status(500).json({
@@ -55,7 +55,7 @@ const generarContrato = async (req, res) => {
         });
       }
 
-      conexion.query('INSERT INTO Contrato SET', { detalles, condicionPago, precioAcordado, cita, fechaContrato: new Date() }, async (error, results) => {
+      conexion.query('INSERT INTO Contrato SET ?', { detalles, condicionPago, precioAcordado, cita, fechaContrato: new Date() }, async (error, results) => {
         if (error) {
           console.log(error);
           return res.status(500).json({

@@ -60,7 +60,6 @@ const postValidator = [
 
 const citaValidator = [
   check('fecha', "La fecha es obligatoria").not().isEmpty(),
-  check('hora', "La hora es obligatoria").not().isEmpty(),
   check('publicacion', "La publicacion es obligatoria").not().isEmpty(),
   check('vendedor', "El vendedor es obligatorio").not().isEmpty(),
 

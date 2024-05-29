@@ -2,13 +2,22 @@ import { Barra } from "../components/ui/Barra";
 import { BarraAbajo } from "../components/ui/BarraAbajo";
 import { PublicacionCard } from "../components/publicar/PublicacionCard";
 import { EspecificacionesCard } from "../components/publicar/EspecificacionesCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UbicacionCard } from "../components/publicar/UbicacionCard";
 import { PrecioCard } from "../components/publicar/PrecioCard";
-import { constants } from '../constants/constants';
+import { URL_API } from '../utils/constants';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export const PublicarPage = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem('authentication-token')) {
+      navigate('/login');
+    }
+  }, []);
 
 
   const [formData, setFormData] = useState({
@@ -44,14 +53,14 @@ export const PublicarPage = () => {
 
   const [pagina, setPagina] = useState(1);
 
-  const handlePublicar = async () => {
-
+  const publicarFotos = async () => {
 
 
     const fotos = [];
+
     let formFoto = new FormData();
     formFoto.append('foto', formData.foto);
-    let response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
+    let response = await axios.post(URL_API + '/posts/foto', formFoto, {
       headers: {
         'authentication-token': localStorage.getItem('authentication-token'),
       }
@@ -61,207 +70,149 @@ export const PublicarPage = () => {
       lugar: 'principal'
     });
 
-    const subirFotosRecamara = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosRecamara.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'recamara'
-        });
+    let cnt = 1;
+    for (const foto of formData.fotosRecamara) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'recamara ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosRecamara = await subirFotosRecamara;
-    fotosRecamara.forEach(foto => {
-      fotos.push(foto);
-    });
-
-    const subirFotosBano = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosBano.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'bano'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosBano) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'bano ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosBano = await subirFotosBano;
-    fotosBano.forEach(foto => {
-      fotos.push(foto);
-    });
-
-    const subirFotosMedioBano = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosMedioBano.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'medio bano'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosMedioBano) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'medio bano ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosMedioBano = await subirFotosMedioBano;
-    fotosMedioBano.forEach(foto => {
-      fotos.push(foto);
-    });
-
-
-    const subirFotosCocina = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosCocina.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'cocina'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosCocina) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'cocina ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosCocina = await subirFotosCocina;
-    fotosCocina.forEach(foto => {
-      fotos.push(foto);
-    });
-
-    const subirFotosSala = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosSala.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'sala'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosSala) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'sala ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosSala = await subirFotosSala;
-    fotosSala.forEach(foto => {
-      fotos.push(foto);
-    });
-
-    const subirFotosComedor = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosComedor.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'comedor'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosComedor) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'comedor ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosComedor = await subirFotosComedor;
-    fotosComedor.forEach(foto => {
-      fotos.push(foto);
-    });
-
-    const subirFotosPatio = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosPatio.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'patio'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosPatio) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'patio ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosPatio = await subirFotosPatio;
-    fotosPatio.forEach(foto => {
-      fotos.push(foto);
-    });
-
-    const subirFotosCochera = new Promise((resolve, reject) => {
-      const res = [];
-      formData.fotosCochera.forEach(async (foto) => {
-        let formFoto = new FormData();
-        formFoto.append('foto', foto);
-        response = await axios.post(constants.URL_API + '/posts/foto', formFoto, {
-          headers: {
-            'authentication-token': localStorage.getItem('authentication-token'),
-            'Content-Type': 'multipart/form-data',
-          },
-          transformRequest: foto => foto,
-        })
-        res.push({
-          fotoURL: response.data.url,
-          lugar: 'cochera'
-        });
+    cnt = 1;
+    for (const foto of formData.fotosCochera) {
+      formFoto = new FormData();
+      formFoto.append('foto', foto);
+      response = await axios.post(URL_API + '/posts/foto', formFoto, {
+        headers: {
+          'authentication-token': localStorage.getItem('authentication-token'),
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+      fotos.push({
+        fotoURL: response.data.url,
+        lugar: 'cochera ' + cnt
       });
-      resolve(res);
-    });
+      cnt++;
+    }
 
-    const fotosCochera = await subirFotosCochera;
-    fotosCochera.forEach(foto => {
-      fotos.push(foto);
-    });
+    return fotos;
+  }
 
+
+  const handlePublicar = async () => {
+
+    const fotos = await publicarFotos();
 
     const subir = {
       calle: formData.calle,
@@ -287,12 +238,14 @@ export const PublicarPage = () => {
       fotos: fotos
     }
 
-    axios.post(constants.URL_API + '/posts/post', subir, {
+    axios.post(URL_API + '/posts/post', subir, {
       headers: {
         'authentication-token': localStorage.getItem('authentication-token')
       }
     }).then((response) => {
       console.log(response);
+      alert('Propiedad publicada exitosamente');
+      navigate('/perfil');
     }).catch((error) => {
       console.log(error);
     }

@@ -9,7 +9,7 @@ const getCitasVendedor = async (req, res) => {
     }
 
     const id = req.userId;
-    conexion.query('SELECT * FROM Cita WHERE vendedor = ?', [id], async (error, results) => {
+    conexion.query('SELECT * FROM Cita WHERE vendedor = ? ORDER BY FechaCita', [id], async (error, results) => {
       if (error) {
         console.log(error);
         return res.status(500).json({
@@ -30,7 +30,7 @@ const getCitasComprador = async (req, res) => {
   try {
 
     const id = req.userId;
-    conexion.query('SELECT * FROM Cita WHERE comprador = ?', [id], async (error, results) => {
+    conexion.query('SELECT * FROM Cita WHERE comprador = ? ORDER BY FechaCita', [id], async (error, results) => {
       if (error) {
         console.log(error);
         return res.status(500).json({
@@ -65,8 +65,8 @@ const generarCita = async (req, res) => {
         });
       }
 
-      const { fecha, hora, publicacion, vendedor } = req.body;
-      conexion.query('INSERT INTO Cita SET ?', { fecha, hora, publicacion, comprador: id, vendedor, estatus: "En espera" }, async (error, results) => {
+      const { fecha, publicacion, vendedor } = req.body;
+      conexion.query('INSERT INTO Cita SET ?', { fechaCita: fecha, publicacion, comprador: id, vendedor, estatus: "En espera" }, async (error, results) => {
         if (error) {
           console.log(error);
           return res.status(500).json({
@@ -171,11 +171,37 @@ const cancelarCita = async (req, res) => {
   }
 }
 
+const getCitaById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    conexion.query('SELECT * FROM Cita WHERE idCita = ?', [id], async (error, results) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({
+          error: 'Server error'
+        });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({
+          error: 'Cita no encontrada'
+        });
+      }
+      return res.status(200).json(results[0]);
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: 'Server error'
+    });
+  }
+}
+
 module.exports = {
   getCitasVendedor,
   getCitasComprador,
   generarCita,
   aceptarCita,
   rechazarCita,
-  cancelarCita
+  cancelarCita,
+  getCitaById
 };

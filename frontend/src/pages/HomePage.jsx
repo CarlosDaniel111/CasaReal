@@ -3,7 +3,7 @@ import { BarraAbajo } from "../components/ui/BarraAbajo";
 import casa from "../assets/casa.webp";
 
 const HomePage = () => {
-  console.log(localStorage.getItem('token'));
+
   return (
     <>
       <Barra />

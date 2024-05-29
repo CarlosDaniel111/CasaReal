@@ -1,10 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { constants } from '../constants/constants';
+import { URL_API } from '../utils/constants';
+import { useUser } from '../utils/UserContext';
 
 export function LoginPage() {
+
+  useEffect(() => {
+    if (localStorage.getItem('authentication-token')) {
+      navigate('/perfil');
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -14,6 +21,7 @@ export function LoginPage() {
   const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
+  const { user, setUser } = useUser();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -25,7 +33,7 @@ export function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(constants.URL_API + '/users/login', {
+    axios.post(URL_API + '/users/login', {
       email: formData.email,
       password: formData.password
     }).then((response) => {
@@ -33,10 +41,26 @@ export function LoginPage() {
         setErrors({});
         // Guardar token en localStorage
         localStorage.setItem('authentication-token', response.data.token);
-        // Redirigir a la página de perfil
-        navigate('/perfil');
+
+        axios.get(URL_API + '/users', {
+          headers: {
+            'authentication-token': response.data.token
+          }
+        }).then((response) => {
+          setUser(response.data);
+          // Redirigir a la página de perfil
+          navigate('/perfil');
+        }).catch((error) => {
+          console.error(error);
+        });
+
+
+
+      } else {
+        console.log(response);
       }
     }).catch((error) => {
+      console.log(error);
       setErrors({
         general: error.response.data.error
       });
