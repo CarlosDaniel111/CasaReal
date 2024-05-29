@@ -28,7 +28,7 @@ export const ComponenteMapa = ({ addresses }) => {
             const response = await fetch(
                 `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
                     address
-                )}&key=AIzaSyDayYFxwKUgKbLtxKyk7X_Uv-Myu8NOLhc`
+                )}&key=${REACT_APP_GOOGLE_MAPS_KEY}`
             );
             const data = await response.json();
             if (data.results && data.results.length > 0) {
@@ -114,6 +114,9 @@ export const ComponenteMapa = ({ addresses }) => {
                 cargando ? <p> Cargando...</p > :
                     <APIProvider apiKey={REACT_APP_GOOGLE_MAPS_KEY}>
                         <Map style={mapStyles} defaultCenter={currentLocation} defaultZoom={12} mapId={"8e3445474e3760c1"}>
+                            <AdvancedMarker position={currentLocation}>
+                                <Pin background={"green"} />
+                            </AdvancedMarker>
                             {markers.map((marker, index) => (
                                 <AdvancedMarker key={index} position={marker.location} onClick={() => setSelectedMarker(index)}>
                                     <Pin background={"red"} />
